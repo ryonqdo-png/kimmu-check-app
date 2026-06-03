@@ -1,0 +1,4 @@
+// components/EditShiftPattern.js
+export default function EditShiftPattern() {
+  return <div>編集中…（ここはあとで作る）</div>;
+}
