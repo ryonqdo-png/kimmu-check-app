@@ -23,8 +23,10 @@ export default function Home() {
   const [selectedNo, setSelectedNo] = useState("1");
   const [workDate, setWorkDate] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-  setIsAdmin(window.location.search.includes("admin=1"));
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  setIsAdmin(params.get("admin") === "1");
 }, []);
   useEffect(() => {
     const savedTable = localStorage.getItem("shiftTable");
@@ -124,7 +126,7 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
             </div>
           </div>
 
-         <button
+        <button
   onClick={saveAll}
   style={{
     marginTop: 30,
@@ -135,112 +137,116 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
 >
   保存
 </button>
+<button
+  onClick={() => setIsAdmin(!isAdmin)}
+  style={{
+    marginTop: 20,
+    width: "100%",
+    padding: 10,
+    fontSize: 14,
+    opacity: 0.5,
+  }}
+>
+  管理者モード
+</button>
+
 {isAdmin && (
   <button onClick={() => setMode("setting")}>
     ⚙️ 設定
   </button>
 )}
+
 </>
 )}
-     {isAdmin && mode === "setting" && (
-        <>
-          <h1>設定</h1>
-<input
-  type="file"
-  accept=".csv"
-/>
-          <div style={{ marginTop: 20 }}>
-            <div>次回出勤日</div>
-            <input
-              type="date"
-              value={workDate}
-              onChange={(e) => setWorkDate(e.target.value)}
-              style={{ fontSize: 20, padding: 10, width: "100%" }}
-            />
-          </div>
 
-          <hr style={{ margin: "30px 0" }} />
-<div style={{ marginBottom: 20 }}>
-  <input
-    type="file"
-    accept=".csv"
-    onChange={importCsv}
-  />
-</div>
-          <h2>対応表</h2>
+{isAdmin && mode === "setting" && (
+  <>
+    <h1>設定</h1>
 
-          {shiftTable.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 10,
-                marginBottom: 10,
-              }}
-            >
-              <input
-                value={item.no}
-                onChange={(e) => {
-                  const newTable = [...shiftTable];
-                  newTable[index] = {
-                    ...newTable[index],
-                    no: e.target.value,
-                  };
-                  setShiftTable(newTable);
-                }}
-                placeholder="勤務番号"
-                style={{ fontSize: 18, padding: 8 }}
-              />
-
-              <input
-                value={item.time}
-                onChange={(e) => {
-                  const newTable = [...shiftTable];
-                  newTable[index] = {
-                    ...newTable[index],
-                    time: e.target.value,
-                  };
-                  setShiftTable(newTable);
-                }}
-                placeholder="出勤時間"
-                style={{ fontSize: 18, padding: 8 }}
-              />
-            </div>
-          ))}
-
-          <button
-            onClick={() => setShiftTable([...shiftTable, { no: "", time: "" }])}
-            style={{ marginTop: 10, padding: 10, fontSize: 18 }}
-          >
-            行を追加
-          </button>
-
-          <button
-            onClick={saveAll}
-            style={{
-              marginTop: 10,
-              marginLeft: 10,
-              padding: 10,
-              fontSize: 18,
-            }}
-          >
-            保存
-          </button>
-
-          <button
-            onClick={() => setMode("view")}
-            style={{
-              marginTop: 30,
-              width: "100%",
-              padding: 15,
-              fontSize: 20,
-            }}
-          >
-            戻る
-          </button>
-        </>
-      )}
+    <div style={{ marginTop: 20 }}>
+      <div>次回出勤日</div>
+      <input
+        type="date"
+        value={workDate}
+        onChange={(e) => setWorkDate(e.target.value)}
+        style={{ fontSize: 20, padding: 10, width: "100%" }}
+      />
     </div>
-  );
+
+    <hr style={{ margin: "30px 0" }} />
+
+    <div style={{ marginBottom: 20 }}>
+      <input type="file" accept=".csv" onChange={importCsv} />
+    </div>
+
+    <h2>対応表</h2>
+
+    {shiftTable.map((item, index) => (
+      <div
+        key={index}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 10,
+          marginBottom: 10,
+        }}
+      >
+        <input
+          value={item.no}
+          onChange={(e) => {
+            const newTable = [...shiftTable];
+            newTable[index] = { ...newTable[index], no: e.target.value };
+            setShiftTable(newTable);
+          }}
+          placeholder="勤務番号"
+          style={{ fontSize: 18, padding: 8 }}
+        />
+
+        <input
+          value={item.time}
+          onChange={(e) => {
+            const newTable = [...shiftTable];
+            newTable[index] = { ...newTable[index], time: e.target.value };
+            setShiftTable(newTable);
+          }}
+          placeholder="出勤時間"
+          style={{ fontSize: 18, padding: 8 }}
+        />
+      </div>
+    ))}
+
+    <button
+      onClick={() => setShiftTable([...shiftTable, { no: "", time: "" }])}
+      style={{ marginTop: 10, padding: 10, fontSize: 18 }}
+    >
+      行を追加
+    </button>
+
+    <button
+      onClick={saveAll}
+      style={{
+        marginTop: 10,
+        marginLeft: 10,
+        padding: 10,
+        fontSize: 18,
+      }}
+    >
+      保存
+    </button>
+
+    <button
+      onClick={() => setMode("view")}
+      style={{
+        marginTop: 30,
+        width: "100%",
+        padding: 15,
+        fontSize: 20,
+      }}
+    >
+      戻る
+    </button>
+  </>
+)}
+</div>
+);
 }
