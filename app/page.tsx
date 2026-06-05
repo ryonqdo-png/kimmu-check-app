@@ -23,7 +23,7 @@ const [shiftTable, setShiftTable] = useState<ShiftItem[]>(defaultTable);
 const [selectedNo, setSelectedNo] = useState("1");
 const [workDate, setWorkDate] = useState("");
 const [isAdmin, setIsAdmin] = useState(false);
-
+const ADMIN_PASSWORD = "1234";
 useEffect(() => {
   setIsAdmin(window.location.search.includes("admin=1"));
 
@@ -133,7 +133,21 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
   保存
 </button>
 <button
-  onClick={() => setIsAdmin(!isAdmin)}
+  onClick={() => {
+
+    const pass = prompt("管理者パスコードを入力してください");
+
+    if (pass === ADMIN_PASSWORD) {
+
+      setIsAdmin(true);
+
+    } else if (pass !== null) {
+
+      alert("パスコードが違います");
+
+    }
+
+  }}
   style={{
     marginTop: 20,
     width: "100%",
