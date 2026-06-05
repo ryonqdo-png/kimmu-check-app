@@ -18,29 +18,24 @@ const defaultTable: ShiftItem[] = [
 ];
 
 export default function Home() {
-  const [mode, setMode] = useState<"view" | "setting">("view");
-  const [shiftTable, setShiftTable] = useState<ShiftItem[]>(defaultTable);
-  const [selectedNo, setSelectedNo] = useState("1");
-  const [workDate, setWorkDate] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+const [mode, setMode] = useState<"view" | "setting">("view");
+const [shiftTable, setShiftTable] = useState<ShiftItem[]>(defaultTable);
+const [selectedNo, setSelectedNo] = useState("1");
+const [workDate, setWorkDate] = useState("");
+const [isAdmin, setIsAdmin] = useState(false);
 
 useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  setIsAdmin(params.get("admin") === "1");
+  setIsAdmin(window.location.search.includes("admin=1"));
+
+  const savedTable = localStorage.getItem("shiftTable");
+  const savedDate = localStorage.getItem("workDate");
+  const savedShift = localStorage.getItem("selectedNo");
+
+  if (savedTable) setShiftTable(JSON.parse(savedTable));
+  if (savedDate) setWorkDate(savedDate);
+  if (savedShift) setSelectedNo(savedShift);
 }, []);
-  useEffect(() => {
-    const savedTable = localStorage.getItem("shiftTable");
-    const savedDate = localStorage.getItem("workDate");
-    const savedShift = localStorage.getItem("selectedNo");
-useEffect(() => {
-  if (!isAdmin && mode === "setting") {
-    setMode("view");
-  }
-}, [isAdmin, mode]);
-    if (savedTable) setShiftTable(JSON.parse(savedTable));
-    if (savedDate) setWorkDate(savedDate);
-    if (savedShift) setSelectedNo(savedShift);
-  }, []);
+
 
   const selectedShift = shiftTable.find((item) => item.no === selectedNo);
 
