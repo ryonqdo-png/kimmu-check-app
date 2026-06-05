@@ -22,12 +22,18 @@ export default function Home() {
   const [shiftTable, setShiftTable] = useState<ShiftItem[]>(defaultTable);
   const [selectedNo, setSelectedNo] = useState("1");
   const [workDate, setWorkDate] = useState("");
-
+const isAdmin =
+  typeof window !== "undefined" &&
+  window.location.search.includes("admin=1");
   useEffect(() => {
     const savedTable = localStorage.getItem("shiftTable");
     const savedDate = localStorage.getItem("workDate");
     const savedShift = localStorage.getItem("selectedNo");
-
+useEffect(() => {
+  if (!isAdmin && mode === "setting") {
+    setMode("view");
+  }
+}, [isAdmin, mode]);
     if (savedTable) setShiftTable(JSON.parse(savedTable));
     if (savedDate) setWorkDate(savedDate);
     if (savedShift) setSelectedNo(savedShift);
@@ -128,22 +134,14 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
 >
   保存
 </button>
-
-<button
-  onClick={() => setMode("setting")}
-  style={{
-    marginTop: 10,
-    width: "100%",
-    padding: 15,
-    fontSize: 20,
-  }}
->
-  ⚙️ 設定
-</button>
-        </>
-      )}
-
-      {mode === "setting" && (
+{isAdmin && (
+  <button onClick={() => setMode("setting")}>
+    ⚙️ 設定
+  </button>
+)}
+</>
+)}
+     {isAdmin && mode === "setting" && (
         <>
           <h1>設定</h1>
 <input
