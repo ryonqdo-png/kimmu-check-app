@@ -22,9 +22,10 @@ export default function Home() {
   const [shiftTable, setShiftTable] = useState<ShiftItem[]>(defaultTable);
   const [selectedNo, setSelectedNo] = useState("1");
   const [workDate, setWorkDate] = useState("");
-const isAdmin =
-  typeof window !== "undefined" &&
-  window.location.search.includes("admin=1");
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+  setIsAdmin(window.location.search.includes("admin=1"));
+}, []);
   useEffect(() => {
     const savedTable = localStorage.getItem("shiftTable");
     const savedDate = localStorage.getItem("workDate");
