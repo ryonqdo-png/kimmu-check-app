@@ -45,8 +45,28 @@ if (savedNotifyTime) setNotifyTime(savedNotifyTime);
 
   const selectedShift = shiftTable.find((item) => item.no === selectedNo);
 
-  const saveAll = () => {
+   const testNotification = async () => {
+  if (!("Notification" in window)) {
+    alert("このブラウザは通知に対応していません");
+    return;
+  }
 
+  let permission = Notification.permission;
+
+  if (permission === "default") {
+    permission = await Notification.requestPermission();
+  }
+
+  if (permission !== "granted") {
+    alert("通知が許可されていません");
+    return;
+  }
+
+  new Notification("勤務確認テスト", {
+    body: `勤務番号: ${selectedNo}`,
+  });
+};
+const saveAll = () => {
   localStorage.setItem("shiftTable", JSON.stringify(shiftTable));
   localStorage.setItem("workDate", workDate);
   localStorage.setItem("selectedNo", selectedNo);
@@ -137,9 +157,22 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
     padding: 15,
     fontSize: 20,
   }}
->
+  >
+保存
+</button>
 <div style={{ marginTop: 30 }}>
   <div>通知設定</div>
+  <button
+  onClick={testNotification}
+  style={{
+    marginTop: 10,
+    width: "100%",
+    padding: 12,
+    fontSize: 18,
+  }}
+  >
+  通知テスト
+</button>
 
   <label style={{ display: "block", marginTop: 10, fontSize: 18 }}>
     <input
@@ -162,23 +195,27 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
     }}
   />
 </div>
+<button
+  onClick={saveAll}
+  style={{
+    marginTop: 10,
+    marginLeft: 10,
+    padding: 10,
+    fontSize: 18,
+  }}
+>
   保存
 </button>
+
 <button
   onClick={() => {
-
     const pass = prompt("管理者パスコードを入力してください");
 
     if (pass === ADMIN_PASSWORD) {
-
       setIsAdmin(true);
-
     } else if (pass !== null) {
-
       alert("パスコードが違います");
-
     }
-
   }}
   style={{
     marginTop: 20,
