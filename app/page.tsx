@@ -24,16 +24,22 @@ const [selectedNo, setSelectedNo] = useState("1");
 const [workDate, setWorkDate] = useState("");
 const [isAdmin, setIsAdmin] = useState(false);
 const ADMIN_PASSWORD = "1234";
+const [notifyEnabled, setNotifyEnabled] = useState(false);
+const [notifyTime, setNotifyTime] = useState("21:00");
 useEffect(() => {
   setIsAdmin(window.location.search.includes("admin=1"));
 
   const savedTable = localStorage.getItem("shiftTable");
   const savedDate = localStorage.getItem("workDate");
   const savedShift = localStorage.getItem("selectedNo");
+  const savedNotifyEnabled = localStorage.getItem("notifyEnabled");
+const savedNotifyTime = localStorage.getItem("notifyTime");
 
   if (savedTable) setShiftTable(JSON.parse(savedTable));
   if (savedDate) setWorkDate(savedDate);
   if (savedShift) setSelectedNo(savedShift);
+  if (savedNotifyEnabled) setNotifyEnabled(savedNotifyEnabled === "true");
+if (savedNotifyTime) setNotifyTime(savedNotifyTime);
 }, []);
 
 
@@ -44,6 +50,8 @@ useEffect(() => {
   localStorage.setItem("shiftTable", JSON.stringify(shiftTable));
   localStorage.setItem("workDate", workDate);
   localStorage.setItem("selectedNo", selectedNo);
+  localStorage.setItem("notifyEnabled", String(notifyEnabled));
+localStorage.setItem("notifyTime", notifyTime);
 
   alert("保存しました");
 };
@@ -130,6 +138,30 @@ const importCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
     fontSize: 20,
   }}
 >
+<div style={{ marginTop: 30 }}>
+  <div>通知設定</div>
+
+  <label style={{ display: "block", marginTop: 10, fontSize: 18 }}>
+    <input
+      type="checkbox"
+      checked={notifyEnabled}
+      onChange={(e) => setNotifyEnabled(e.target.checked)}
+    />
+    通知する
+  </label>
+
+  <input
+    type="time"
+    value={notifyTime}
+    onChange={(e) => setNotifyTime(e.target.value)}
+    style={{
+      marginTop: 10,
+      fontSize: 24,
+      padding: 10,
+      width: "100%",
+    }}
+  />
+</div>
   保存
 </button>
 <button
